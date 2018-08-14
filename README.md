@@ -1,6 +1,8 @@
 # Hashtopolis Service Runner
 
 Server background runner for Hashtopolis to run specific services.
+The runner is packed into a zip (using `build.sh`) and then placed in `src/inc/runner/` in Hashtopolis. 
+It is automatically then activated when the multicast feature gets enabled on the server.
 
 ## Prerequisites
 
