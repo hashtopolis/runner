@@ -40,7 +40,8 @@ class HTService(Service):
 
         while not self.got_sigterm():
             entries = self.database.get_file_entries()
-            logging.info("Retrieved " + str(len(entries)) + " file download entries.")
+            if entries:
+                logging.info("Retrieved " + str(len(entries)) + " file download entries.")
 
             for file_download in entries:
                 file = self.database.get_file(file_download['fileId'])
