@@ -51,26 +51,25 @@ class HTService(Service):
                 # Build command
                 # ./uftp -z -I <interface> -Ctfmcc / -R <rate> <file>
                 cmd = self.working_dir + "/uftp -z -I "
-                if self.config.get_value('serviceInterface'):
-                    cmd += str(self.config.get_value('serviceInterface')) + ' '
+                if self.config.get_value('multicastDevice'):
+                    cmd += str(self.config.get_value('multicastDevice')) + ' '
                 else:
                     cmd += "eth0 "  # just if we are lucky it's eth0
-                if self.config.get_value('serviceTransmissionRateEnabled') and self.config.get_value('serviceTransmissionRate'):
-                    cmd += "-R " + str(self.config.get_value('serviceTransmissionRate')) + ' '
+                if self.config.get_value('multicastTransferRateEnable') == 1 and self.config.get_value('multicastTranserRate'):
+                    cmd += "-R " + str(self.config.get_value('multicastTranserRate')) + ' '
                 else:
                     cmd += "-Ctfmcc "  # flow-control enabled (default)
-                cmd += self.working_dir + "/../files/" + file['filename']
-                logging.debug("CALL: " + cmd)
-                process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                process.wait()
-                output, err = process.communicate()
-
-                status = 1
-                for line in err:
-                    logging.error("Error from UFTP: " + line)
-                    status = -1
+                cmd += self.working_dir + "/../../files/" + file['filename']
+                logging.info("CALL: " + cmd)
+                output = []
+                try:
+                    output = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT)
+                except subprocess.CalledProcessError as exc:
+                    print("Status : FAIL", exc.returncode, exc.output)
+                    logging.error("Error from UFTP: " + str(exc.returncode) + "/" + str(exc.output))
 
                 # parse output and check if all completed successfully
+                status = 1
                 for line in output:
                     if str(line).startswith("Host: "):
                         if str(line).find("Status: Completed") != -1:

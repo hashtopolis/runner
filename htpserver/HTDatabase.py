@@ -44,26 +44,32 @@ class HTDatabase:
         if not self.db.is_connected():
             logging.error("Connection to Database failed!")
             raise RuntimeError()
+        self.db.autocommit = True
 
     def get_file_entries(self):
         if self.db is None:
             return []
         cur = self.db.cursor(dictionary=True)
         cur.execute("SELECT * FROM FileDownload WHERE status IN (0,-1)")
-        return cur.fetchall()
+        data = cur.fetchall()
+        cur.close()
+        return data
 
     def get_file(self, file_id):
         if self.db is None:
             return []
         cur = self.db.cursor(dictionary=True)
         cur.execute("SELECT * FROM File WHERE fileId=" + str(int(file_id)))
-        return cur.fetchall()[0]
+        data = cur.fetchall()[0]
+        cur.close()
+        return data
 
     def update_entry(self, status, file_id):
         if self.db is None:
             return
         cur = self.db.cursor()
         cur.execute("UPDATE FileDownload SET status=" + str(int(status)) + " WHERE fileId=" + str(int(file_id)))
+        cur.close()
 
     def get_config(self):
         if self.db is None:
@@ -71,4 +77,6 @@ class HTDatabase:
         cur = self.db.cursor(dictionary=True)
         # we load the config section for the runner
         cur.execute("SELECT * FROM Config WHERE configSectionId=6")
-        return cur.fetchall()
+        data = cur.fetchall()
+        cur.close()
+        return data
