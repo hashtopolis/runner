@@ -32,6 +32,8 @@ class HTService(Service):
         logging.basicConfig(filename=logfile, level=log_level, format=log_format, datefmt=date_format)
         logging.getLogger().addHandler(logging.StreamHandler())
 
+        logging.info("Starting Hashtopolis service runner v0.1.0...")
+
         try:
             self.database = HTDatabase(self.working_dir)
             self.config = Config(self.database)
