@@ -72,8 +72,15 @@ class HTService(Service):
 
                 # parse output and check if all completed successfully
                 for line in output:
-                    # TODO: parse
-                    pass
+                    if str(line).startswith("Host: "):
+                        if str(line).find("Status: Completed") != -1:
+                            pass  # good
+                        elif str(line).find("Status: Skipped") != -1:
+                            pass # good
+                        else:
+                            # status is not good -> we will need to resend it
+                            # TODO: maybe this checks need to be extended to improve checking for errors
+                            status = -1
 
                 self.database.update_entry(status, file['fileId'])
             time.sleep(5)
