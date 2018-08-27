@@ -55,7 +55,7 @@ class HTService(Service):
                     cmd += str(self.config.get_value('multicastDevice')) + ' '
                 else:
                     cmd += "eth0 "  # just if we are lucky it's eth0
-                if self.config.get_value('multicastTransferRateEnable') == 1 and self.config.get_value('multicastTranserRate'):
+                if int(self.config.get_value('multicastTransferRateEnable')) == 1 and int(self.config.get_value('multicastTranserRate')) > 0:
                     cmd += "-R " + str(self.config.get_value('multicastTranserRate')) + ' '
                 else:
                     cmd += "-Ctfmcc "  # flow-control enabled (default)
@@ -71,6 +71,7 @@ class HTService(Service):
                 # parse output and check if all completed successfully
                 status = 1
                 for line in output:
+                    logging.info("UFTP-OUT: " + str(line))
                     if str(line).startswith("Host: "):
                         if str(line).find("Status: Completed") != -1:
                             pass  # good
