@@ -46,7 +46,7 @@ class HTService(Service):
                 logging.info("Retrieved " + str(len(entries)) + " file download entries.")
 
             for file_download in entries:
-                file = self.database.get_file(file_download['fileId'])
+                db_file = self.database.get_file(file_download['fileId'])
 
                 # Build command
                 # ./uftp -z -I <interface> -Ctfmcc / -R <rate> <file>
@@ -59,7 +59,7 @@ class HTService(Service):
                     cmd += "-R " + str(self.config.get_value('multicastTranserRate')) + ' '
                 else:
                     cmd += "-Ctfmcc "  # flow-control enabled (default)
-                cmd += self.working_dir + "/../../files/" + file['filename']
+                cmd += self.working_dir + "/../../files/" + db_file['filename']
                 logging.info("CALL: " + cmd)
                 output = []
                 try:
@@ -82,5 +82,5 @@ class HTService(Service):
                             # TODO: maybe this checks need to be extended to improve checking for errors
                             status = -1
 
-                self.database.update_entry(status, file['fileId'])
+                self.database.update_entry(status, db_file['fileId'])
             time.sleep(5)
