@@ -9,7 +9,7 @@ import mysql.connector
 class HTDatabase:
     def __init__(self, working_dir):
         # Search the DB settings for Hashtopolis
-        path = working_dir + "/../db.php"
+        path = working_dir + "/../conf.php"
         self.db = None
         if not os.path.exists(path):
             logging.error("DB connection file of Hashtopolis is not present!")
